@@ -10,13 +10,12 @@ import UIKit
 class ToDoListViewController: UITableViewController {
     
     // the itemArray
-    let itemArray = ["Start A Blog", "Rebuild Bike", "Exercise"]
+    let itemArray = ["Start A Blog", "Rebuild Bike", "Exercise", "Play Ball", "Wash Car"]
 
     override func viewDidLoad() {
         super.viewDidLoad()
         
     }
-    
     
     // MARK - Tableview Datasource Methods
     
