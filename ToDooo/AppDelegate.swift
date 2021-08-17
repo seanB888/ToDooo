@@ -13,8 +13,31 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
 
 
     func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        // Override point for customization after application launch.
+        
+        // to locate the PList file
+        print(NSSearchPathForDirectoriesInDomains(.documentDirectory, .userDomainMask, true).last! as String)
+        
         return true
+    }
+    
+    func applicationWillResignActive(_ application: UIApplication) {
+        print("Application Will Resign Active")
+    }
+    
+    func applicationDidEnterBackground(_ application: UIApplication) {
+        print("Application Did Enter Background")
+    }
+    
+    func applicationWillEnterForeground(_ application: UIApplication) {
+        print("Application Will Enter Foreground")
+    }
+    
+    func applicationDidBecomeActive(_ application: UIApplication) {
+        print("Application Did Become Active")
+    }
+    
+    func applicationWillTerminate(_ application: UIApplication) {
+        print("Application Will Terminate")
     }
 
     // MARK: UISceneSession Lifecycle
