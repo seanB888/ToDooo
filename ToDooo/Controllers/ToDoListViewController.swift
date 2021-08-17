@@ -60,14 +60,10 @@ class ToDoListViewController: UITableViewController {
         cell.textLabel?.text = item.title
         
         // using the ternary operator
-        
-        if item.done == true {
-            cell.accessoryType = .checkmark
-        } else {
-            cell.accessoryType = .none
-        }
+        // value = condition ? valueIfTrue : ValueIfFalse
+        cell.accessoryType = item.done ? .checkmark : .none
             
-            return cell
+        return cell
         }
     
     // MARK - TableView Delegate Methods
