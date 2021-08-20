@@ -8,12 +8,12 @@
 import UIKit
 
 class ToDoListViewController: UITableViewController {
-    
+    // This is the global area
     // the itemArray
     var itemArray = [Item]()
     
-    let defaults = UserDefaults.standard
-
+    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -37,10 +37,8 @@ class ToDoListViewController: UITableViewController {
         newItem4.title = "Fast"
         itemArray.append(newItem4)
         
-//        if let items = defaults.array(forKey: "TodoListArray") as? [String] {
+//        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
 //            itemArray = items
-//        } else {
-//            print("Did not get the data from itemArray.")
 //        }
         
     }
@@ -72,8 +70,7 @@ class ToDoListViewController: UITableViewController {
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
-        // this will reload the data to the tableView
-        tableView.reloadData()
+        saveItem()
         
         // mask the row flash from gray back to white when tapped
         tableView.deselectRow(at: indexPath, animated: true)
@@ -94,9 +91,16 @@ class ToDoListViewController: UITableViewController {
             
             self.itemArray.append(newItem)
             
-            self.defaults.set(self.itemArray, forKey: "TodoListArray")
-            
-            self.tableView.reloadData()
+            self.saveItem()
+//            let encoder = PropertyListEncoder()
+//
+//            do {
+//                let data = try encoder.encode(self.itemArray)
+//                try data.write(to: self.dataFilePath!)
+//            } catch {
+//                print("ERROR ENCODING: itemArray, \(error)")
+//            }
+//            self.tableView.reloadData()
         }
         
         // textField in Alert
@@ -107,6 +111,20 @@ class ToDoListViewController: UITableViewController {
         
         alert.addAction(action)
         present(alert, animated: true, completion: nil)
+    }
+    
+    // MARK - Model Manipulation Method
+    
+    func saveItem() {
+        let encoder = PropertyListEncoder()
+        
+        do {
+            let data = try encoder.encode(itemArray)
+            try data.write(to: dataFilePath!)
+        } catch {
+            print("ERROR ENCODING: itemArray, \(error)")
+        }
+        tableView.reloadData()
     }
 }
 
