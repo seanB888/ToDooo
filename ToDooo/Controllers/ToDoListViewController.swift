@@ -17,29 +17,10 @@ class ToDoListViewController: UITableViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        let newItem = Item()
-        newItem.title = "Wash The Car"
-        itemArray.append(newItem)
+        print(dataFilePath)
         
-        let newItem1 = Item()
-        newItem1.title = "Wash The Bike"
-        itemArray.append(newItem1)
-        
-        let newItem2 = Item()
-        newItem2.title = "Get Water"
-        itemArray.append(newItem2)
-        
-        let newItem3 = Item()
-        newItem3.title = "Get Salmon"
-        itemArray.append(newItem3)
-        
-        let newItem4 = Item()
-        newItem4.title = "Fast"
-        itemArray.append(newItem4)
-        
-//        if let items = defaults.array(forKey: "TodoListArray") as? [Item] {
-//            itemArray = items
-//        }
+        // loadItems loads the data in the tableView
+        loadItems()
         
     }
     
@@ -125,6 +106,20 @@ class ToDoListViewController: UITableViewController {
             print("ERROR ENCODING: itemArray, \(error)")
         }
         tableView.reloadData()
+    }
+    
+    func loadItems() {
+        // using OPTIONAL BINDING
+        if let data = try? Data(contentsOf: dataFilePath!) {
+            // decoder to decode the item
+            let decoder = PropertyListDecoder()
+            // creates a new object of the class
+            do {
+                itemArray = try decoder.decode([Item].self, from: data)
+            } catch {
+                print("ERROR: Error Decoding \(error)")
+            }
+        }
     }
 }
 
