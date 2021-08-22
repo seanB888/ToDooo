@@ -6,18 +6,22 @@
 //
 
 import UIKit
+import CoreData
 
 class ToDoListViewController: UITableViewController {
     // This is the global area
-    // the itemArray
+    
+    // the Array Variable itemArray
     var itemArray = [Item]()
     
-    let dataFilePath = FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first?.appendingPathComponent("Items.plist")
+    // workig with CoreData
+    let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        print(dataFilePath)
+        // find the the data path to where the file is being stored
+        print(FileManager.default.urls(for: .documentDirectory, in: .userDomainMask))
         
         // loadItems loads the data in the tableView
         loadItems()
@@ -51,7 +55,7 @@ class ToDoListViewController: UITableViewController {
         
         itemArray[indexPath.row].done = !itemArray[indexPath.row].done
         
-        saveItem()
+        saveItems()
         
         // mask the row flash from gray back to white when tapped
         tableView.deselectRow(at: indexPath, animated: true)
@@ -66,13 +70,16 @@ class ToDoListViewController: UITableViewController {
         let alert = UIAlertController(title: "Add A New ToDooo", message: "", preferredStyle: .alert)
         
         let action = UIAlertAction(title: "Add Item", style: .default) { (action) in
-            // What will happen when Add Item is tapped
-            let newItem = Item()
-            newItem.title = textField.text!
             
+            
+            // What will happen when Add Item is tapped
+            
+            let newItem = Item(context: self.context)
+            newItem.title = textField.text!
+            newItem.done = false
             self.itemArray.append(newItem)
             
-            self.saveItem()
+            self.saveItems()
 //            let encoder = PropertyListEncoder()
 //
 //            do {
@@ -96,29 +103,23 @@ class ToDoListViewController: UITableViewController {
     
     // MARK - Model Manipulation Method
     
-    func saveItem() {
-        let encoder = PropertyListEncoder()
+    func saveItems() {
         
         do {
-            let data = try encoder.encode(itemArray)
-            try data.write(to: dataFilePath!)
+            try context.save()
         } catch {
-            print("ERROR ENCODING: itemArray, \(error)")
+            print("ERROR: Error Saving Context, \(error)")
         }
         tableView.reloadData()
     }
     
     func loadItems() {
-        // using OPTIONAL BINDING
-        if let data = try? Data(contentsOf: dataFilePath!) {
-            // decoder to decode the item
-            let decoder = PropertyListDecoder()
-            // creates a new object of the class
-            do {
-                itemArray = try decoder.decode([Item].self, from: data)
-            } catch {
-                print("ERROR: Error Decoding \(error)")
-            }
+        let request : NSFetchRequest<Item> = Item.fetchRequest()
+        do {
+            // data is now stored in itemArray
+            itemArray = try context.fetch(request)
+        } catch {
+            print("ERROR: Error fetching data from context \(error)")
         }
     }
 }
