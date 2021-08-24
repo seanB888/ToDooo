@@ -104,7 +104,14 @@ class ToDoListViewController: UITableViewController {
         tableView.reloadData()
     }
     
-    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest()) {
+    func loadItems(with request: NSFetchRequest<Item> = Item.fetchRequest(), predicate :  NSPredidcate) {
+        
+        // to query the database
+        let predicate = NSPredicate(format: "parentCategory.name MATCHES %@", arguments: selectedCategory.name)
+        
+        let compoundPredicate = NSCompoundPredicate(
+        
+        request.predicate = predicate
         
         do {
             // data is now stored in itemArray
@@ -121,11 +128,11 @@ extension ToDoListViewController: UISearchBarDelegate {
     func searchBarSearchButtonClicked(_ searchBar: UISearchBar) {
         let request : NSFetchRequest<Item> = Item.fetchRequest()
         
-        request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
+        let request.predicate = NSPredicate(format: "title CONTAINS[cd] %@", searchBar.text!)
         
         request.sortDescriptors = [NSSortDescriptor(key: "title", ascending: true)]
         
-       loadItems(with: request)
+        loadItems(with: request, predicate: predicate)
         
         tableView.reloadData()
     }
