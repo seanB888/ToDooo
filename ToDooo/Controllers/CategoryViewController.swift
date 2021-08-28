@@ -13,7 +13,7 @@ class CategoryViewController: UITableViewController {
     // the Array variable
     var categories = [Category]()
     
-    // working with CoreData
+    // working with CoreData for CRUD
     let context = (UIApplication.shared.delegate as! AppDelegate).persistentContainer.viewContext
 
     override func viewDidLoad() {
@@ -51,6 +51,7 @@ class CategoryViewController: UITableViewController {
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destinationVC = segue.destination as! ToDoListViewController
         
+        // check if the segue identifies the "goToItems"
         if let indexPath = tableView.indexPathForSelectedRow {
             destinationVC.selectedCategory = categories[indexPath.row]
         }
@@ -93,10 +94,11 @@ class CategoryViewController: UITableViewController {
         
         let action = UIAlertAction(title: "Add", style: .default) { (action) in
             
-            // what will happen when add Category is tapped
+            // what will happen when Add Category is tapped
             let newCategory = Category(context: self.context)
             newCategory.name = textField.text!
             
+            // get a referrence of the Category object
             self.categories.append(newCategory)
             
             self.saveCategories()
